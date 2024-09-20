@@ -23,6 +23,10 @@ config :quakes, QuakesWeb.Endpoint,
 # In test we don't send emails
 config :quakes, Quakes.Mailer, adapter: Swoosh.Adapters.Test
 
+config :quakes, usgs_api: Quakes.USGSApi.MockImpl
+
+config :quakes, quake_notifier_req_options: [plug: {Req.Test, Quakes.QuakeNotifier}]
+
 # Disable swoosh api client as it is only required for production adapters
 config :swoosh, :api_client, false
 

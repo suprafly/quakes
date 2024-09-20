@@ -17,7 +17,8 @@ defmodule Quakes.Application do
       # Start a worker by calling: Quakes.Worker.start_link(arg)
       # {Quakes.Worker, arg},
       # Start to serve requests, typically the last entry
-      QuakesWeb.Endpoint
+      QuakesWeb.Endpoint,
+      {Quakes.QuakeMonitor, []}
     ]
 
     # See https://hexdocs.pm/elixir/Supervisor.html

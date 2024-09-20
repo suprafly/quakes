@@ -20,10 +20,11 @@ defmodule QuakesWeb.Router do
     get "/", PageController, :home
   end
 
-  # Other scopes may use custom stacks.
-  # scope "/api", QuakesWeb do
-  #   pipe_through :api
-  # end
+  scope "/", QuakesWeb do
+    pipe_through :api
+
+    post "/listen/quakes", QuakeListenerController, :receive_event
+  end
 
   # Enable LiveDashboard and Swoosh mailbox preview in development
   if Application.compile_env(:quakes, :dev_routes) do
