@@ -3,12 +3,10 @@ defmodule Quakes.Subscriptions do
   The Subscriptions context.
   """
 
-  # import Ecto.Query, warn: false
-  # alias Quakes.Repo
+  import Ecto.Query, warn: false
 
+  alias Quakes.Repo
   alias Quakes.Subscriptions.Subscription
-
-  @ets_table :subscriptions
 
   @doc """
   Returns the list of subscriptions.
@@ -20,16 +18,12 @@ defmodule Quakes.Subscriptions do
 
   """
   def list_subscriptions do
-    @ets_table
-    |> :ets.tab2list()
-    |> Enum.map(&elem(&1, 1))
+    Repo.all(Subscription)
   end
 
 
   @doc """
   Gets a single subscription.
-
-  Raises if the Subscription does not exist.
 
   ## Examples
 
@@ -38,9 +32,11 @@ defmodule Quakes.Subscriptions do
 
   """
   def get_subscription(id) do
-    case :ets.lookup(@ets_table, id) do
-      [{_id, subscription}] -> {:ok, subscription}
-      _ -> {:error, :not_found}
+    (from s in Subscription, where: s.id == ^id)
+    |> Repo.one()
+    |> case do
+      nil -> {:error, :not_found}
+      subscription -> {:ok, subscription}
     end
   end
 
@@ -57,18 +53,8 @@ defmodule Quakes.Subscriptions do
 
   """
   def create_subscription(attrs \\ %{}) do
-    %Subscription{
-      id: Ecto.UUID.generate(),
-      start: Quakes.unix_now_ms
-    }
+    %Subscription{}
     |> Subscription.changeset(attrs)
-    |> case do
-      %Ecto.Changeset{valid?: true} = changeset ->
-        subscription = Ecto.Changeset.apply_changes(changeset)
-        :ets.insert_new(@ets_table, {subscription.id, subscription})
-        {:ok, subscription}
-      changeset ->
-        {:error, changeset}
-    end
+    |> Repo.insert()
   end
 end

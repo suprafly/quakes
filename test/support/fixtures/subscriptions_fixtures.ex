@@ -10,11 +10,7 @@ defmodule Quakes.SubscriptionsFixtures do
   def subscription_fixture(attrs \\ %{}) do
     {:ok, subscription} =
       attrs
-      |> Enum.into(%{
-        endpoint: "http://some.endpoint.com",
-        id: Ecto.UUID.generate(),
-        starts: 42
-      })
+      |> Enum.into(%{endpoint: "http://some.endpoint.com"})
       |> Quakes.Subscriptions.create_subscription()
 
     subscription

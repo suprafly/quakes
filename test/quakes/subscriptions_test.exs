@@ -21,17 +21,12 @@ defmodule Quakes.SubscriptionsTest do
     end
 
     test "create_subscription/1 with valid data creates a subscription" do
-      id = Ecto.UUID.generate()
       valid_attrs = %{
         endpoint: "http://some.endpoint.com",
-        id: id,
-        start: 42
       }
 
       assert {:ok, %Subscription{} = subscription} = Subscriptions.create_subscription(valid_attrs)
       assert subscription.endpoint == "http://some.endpoint.com"
-      assert subscription.id == id
-      assert subscription.start == 42
     end
 
     test "create_subscription/1 with invalid data returns error changeset" do

@@ -7,9 +7,10 @@ defmodule Quakes.Subscriptions.Subscription do
   alias Quakes.Subscriptions.Subscription
 
   @derive Jason.Encoder
-  embedded_schema do 
+  @primary_key {:id, Ecto.UUID, autogenerate: true}
+  schema "subscriptions" do
     field :endpoint, :string
-    field :start, :integer
+    field :start, :utc_datetime
 
     embeds_many :filters, Filter
   end
@@ -17,9 +18,15 @@ defmodule Quakes.Subscriptions.Subscription do
   @doc false
   def changeset(%Subscription{} = subscription, attrs) do
     subscription
-    |> cast(attrs, [:id, :start, :endpoint])
+    |> Map.put(:start, start_time())
+    |> cast(attrs, [:start, :endpoint])
     |> cast_embed(:filters)
-    |> validate_required([:id, :start, :endpoint])
+    |> validate_required([:start, :endpoint])
     |> validate_format(:endpoint, ~r/^http/, message: "must be a valid url")
+  end
+
+  @doc false
+  def start_time do
+    DateTime.utc_now() |> DateTime.truncate(:second)
   end
 end

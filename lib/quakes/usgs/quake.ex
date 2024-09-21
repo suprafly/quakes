@@ -11,8 +11,8 @@ defmodule Quakes.USGS.Quake do
   alias Quakes.USGS.Quake
 
   @primary_key false
-  @derive Jason.Encoder
-  embedded_schema do 
+  @derive {Jason.Encoder, only: [:id, :type, :properties, :geometry]}
+  schema "quakes" do
     field :id, :string, primary_key: true
     field :type, :string
 
@@ -24,6 +24,7 @@ defmodule Quakes.USGS.Quake do
   def changeset(%Quake{} = quake, attrs) do
     quake
     |> cast(attrs, [:id, :type])
+    |> unique_constraint(:id, name: :quakes_pkey)
     |> cast_embed(:properties, required: true)
     |> cast_embed(:geometry, required: true)
     |> validate_required([:id, :type])
