@@ -24,6 +24,7 @@ defmodule QuakesWeb.Router do
     pipe_through :api
 
     post "/listen/quakes", QuakeListenerController, :receive_event
+    post "/subscriptions", SubscriptionController, :create
   end
 
   # Enable LiveDashboard and Swoosh mailbox preview in development

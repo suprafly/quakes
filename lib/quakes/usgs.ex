@@ -3,7 +3,7 @@ defmodule Quakes.USGS do
   The USGS context. This is the Api for creating `Quake` structs.
   """
 
-  import Ecto.Query, warn: false
+  # import Ecto.Query, warn: false
 
   # alias Quakes.Repo
   alias Quakes.USGS.Quake

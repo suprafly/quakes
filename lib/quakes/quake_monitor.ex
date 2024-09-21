@@ -11,11 +11,6 @@ defmodule Quakes.QuakeMonitor do
   alias Quakes.QuakeNotifier
 
   @doc"""
-  Get the endpoint for our local webhook listener.
-  """
-  def target_self, do: url(~p"/listen/quakes/")
-
-  @doc"""
   Convert ms to seconds.
   """
   def in_seconds(num_secs), do: num_secs * 1000
@@ -30,8 +25,7 @@ defmodule Quakes.QuakeMonitor do
           },
         ],
         get_latest_quakes: %{
-          quakes: [],
-          subscribers: [target_self()]
+          quakes: []
         }
       }
     GenServer.start_link(__MODULE__, state)
@@ -43,29 +37,38 @@ defmodule Quakes.QuakeMonitor do
   end
 
   def handle_info({:get_latest_quakes, _} = task, state) do
-    %{quakes: quakes_list, subscribers: subscribers} = state.get_latest_quakes
+    %{quakes: quakes_list} = state.get_latest_quakes
 
     quakes = USGSApi.get_quakes()
     sorted_new_quakes = take_only_new(quakes, quakes_list)
 
     # Dispatch webhook events for all quakes in `sorted_new_quakes`
-    dispatch_quakes_to_subscribers(sorted_new_quakes, subscribers)
+    subscriptions = Quakes.Subscriptions.list_subscriptions()
+    dispatch_quakes_to_subscribers(sorted_new_quakes, subscriptions)
 
     # Reschedule the task
     schedule_task(task)
 
-    task_state = %{quakes: sorted_new_quakes ++ quakes_list, subscribers: subscribers}
+    task_state = %{quakes: sorted_new_quakes ++ quakes_list}
 
     {:noreply, %{state | get_latest_quakes: task_state}}
   end
 
-  defp dispatch_quakes_to_subscribers(sorted_new_quakes, subscribers) do
-    Enum.each(sorted_new_quakes, &dispatch_to_subscribers(&1, subscribers))
+  defp dispatch_quakes_to_subscribers(sorted_new_quakes, subscriptions) do
+    Enum.each(sorted_new_quakes, &dispatch_to_subscribers(&1, subscriptions))
   end
 
-  defp dispatch_to_subscribers(quake, subscribers) do
-    Enum.each(subscribers, fn subscriber ->
-      Task.start(fn -> QuakeNotifier.dispatch_event(quake, subscriber) end)
+  defp dispatch_to_subscribers(quake, subscriptions) do
+    Enum.each(subscriptions, fn subscription ->
+      # Ensure that the received quake matches any filters on the subscription
+      case Quakes.Filters.filter_quake(quake, subscription) do
+        nil ->
+          :ok # do nothing
+        quake ->
+          Task.start(fn ->
+            QuakeNotifier.dispatch_event(quake, subscription.endpoint)
+          end)
+      end
     end)
   end
 

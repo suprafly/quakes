@@ -18,8 +18,6 @@ defmodule Quakes.USGS.Quake do
 
     embeds_one :properties, Properties, on_replace: :delete
     embeds_one :geometry, Geometry, on_replace: :delete
-
-    timestamps(type: :utc_datetime)
   end
 
   @doc false
