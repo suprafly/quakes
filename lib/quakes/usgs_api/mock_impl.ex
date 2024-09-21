@@ -6,6 +6,8 @@ defmodule Quakes.USGSApi.MockImpl do
 
   @behaviour Quakes.USGSApi.Behaviour
 
+  def get_quakes_for_past_month, do: get_quakes(:month, 1.0)
+
   def get_quakes(_interval_type, _duration) do
     """
     {

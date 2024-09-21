@@ -13,6 +13,15 @@ defmodule Quakes.USGSApi.Impl do
     |> handle_response()
   end
 
+  def get_quakes_for_past_month do
+    Req.new(
+      method: :get,
+      url: "https://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/all_month.geojson"
+      )
+    |> Req.Request.run_request()
+    |> handle_response()
+  end
+
   defp create_request(interval_type, duration) do
     Req.new(
       method: :get,
@@ -24,7 +33,7 @@ defmodule Quakes.USGSApi.Impl do
     parsed_quakes = parse_quakes(body)
     errors = Map.get(parsed_quakes, :error)
     if errors do
-      Logger.info "Failed to parse quakes: #{inspect(errors)}"
+      Logger.info "Failed to parse #{Enum.count(errors)} quakes"
     end
     Map.get(parsed_quakes, :ok, [])
   end

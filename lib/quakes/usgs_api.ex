@@ -13,4 +13,9 @@ defmodule Quakes.USGSApi do
     module = Application.get_env(:quakes, :usgs_api, Quakes.USGSApi.Impl)
     module.get_quakes(interval_type, duration)
   end
+
+  def get_quakes_for_past_month do
+    module = Application.get_env(:quakes, :usgs_api, Quakes.USGSApi.Impl)
+    module.get_quakes_for_past_month()
+  end
 end

@@ -11,6 +11,13 @@ To start your Phoenix server:
   * Run `mix ecto.migrate` to migrate the database.
   * Start Phoenix endpoint with `mix phx.server` or inside IEx with `iex -S mix phx.server`
 
+## Backfilling Quakes
+
+To backfill all quakes for the past month, run the follwoing mix task,
+
+```
+mix quakes.backfill
+```
 
 ## API Docs
 
