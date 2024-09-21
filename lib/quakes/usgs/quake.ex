@@ -11,8 +11,8 @@ defmodule Quakes.USGS.Quake do
   alias Quakes.USGS.Quake
 
   @primary_key false
-  @derive Jason.Encoder
-  embedded_schema do 
+  @derive {Jason.Encoder, only: [:id, :type, :properties, :geometry]}
+  schema "quakes" do
     field :id, :string, primary_key: true
     field :type, :string
 

@@ -15,7 +15,7 @@ defmodule QuakesWeb.SubscriptionJSON do
   defp data(%Subscription{} = subscription) do
     %{
       id: subscription.id,
-      start: subscription.start,
+      start: DateTime.to_unix(subscription.start, :millisecond),
       details: %{
         endpoint: subscription.endpoint,
         filters: filters(subscription),

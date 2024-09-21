@@ -21,12 +21,6 @@ defmodule Quakes.Application do
       {Quakes.QuakeMonitor, []}
     ]
 
-    # Create an ETS table to hold subscriptions in memory
-    # Setting this as public for now because it is simpler,
-    # and in the next step we will throw this away anyway
-    # and move to a db.
-    :ets.new(:subscriptions, [:set, :public, :named_table])
-
     opts = [strategy: :one_for_one, name: Quakes.Supervisor]
     Supervisor.start_link(children, opts)
   end

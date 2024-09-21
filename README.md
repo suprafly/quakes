@@ -7,6 +7,8 @@ A webhook service to deliver realtime earthquake events via the USGS API.
 To start your Phoenix server:
 
   * Run `mix setup` to install and setup dependencies
+  * Run `mix ecto.create` to create the database.
+  * Run `mix ecto.migrate` to migrate the database.
   * Start Phoenix endpoint with `mix phx.server` or inside IEx with `iex -S mix phx.server`
 
 
