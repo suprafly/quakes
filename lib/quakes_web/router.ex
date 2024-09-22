@@ -25,6 +25,7 @@ defmodule QuakesWeb.Router do
 
     post "/listen/quakes", QuakeListenerController, :receive_event
     post "/subscriptions", SubscriptionController, :create
+    get "/quakes/within", QuakeController, :within
   end
 
   # Enable LiveDashboard and Swoosh mailbox preview in development

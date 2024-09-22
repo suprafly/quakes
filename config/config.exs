@@ -22,6 +22,8 @@ config :quakes, QuakesWeb.Endpoint,
   pubsub_server: Quakes.PubSub,
   live_view: [signing_salt: "RNE0NiaG"]
 
+config :quakes, Quakes.Repo, types: Quakes.PostgresTypes
+
 # Configures the mailer
 #
 # By default it uses the "Local" adapter which stores the emails
@@ -60,6 +62,8 @@ config :logger, :console,
 
 # Use Jason for JSON parsing in Phoenix
 config :phoenix, :json_library, Jason
+
+config :geo_postgis, json_library: Jason
 
 # Import environment specific config. This must remain at the bottom
 # of this file so it overrides the configuration defined above.

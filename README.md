@@ -5,7 +5,7 @@ A webhook service to deliver realtime earthquake events via the USGS API.
 ## Getting Started
 
 To start your Phoenix server:
-
+  * Ensure that you have PostGIS installed. [Follow the steps for your operating system.](https://postgis.net/documentation/getting_started/)
   * Run `mix setup` to install and setup dependencies
   * Run `mix ecto.create` to create the database.
   * Run `mix ecto.migrate` to migrate the database.
@@ -115,3 +115,64 @@ Success will returns status code `200` with a body like this,
 ```
 
 *Note to reviewers - I used a UUID for the ID rather than something like `"KnXegis"` because It was not obvious how those ids were generated, and therefore it is not obvious how resilient they will be to collisions.*
+
+---
+
+### Get Quakes Within
+
+**GET** http://localhost:4000/quakes/within?longitude=-116.3208313&latitude=32.9821663&distance=1
+
+Gets all quakes around a given lat / long, and within a distance (defaults to 100 meters if unspecified).
+
+#### Response
+
+```
+[
+  {
+    "id": "ci40741663",
+    "type": "Feature",
+    "properties": {
+      "detail": "https://earthquake.usgs.gov/earthquakes/feed/v1.0/detail/ci40741663.geojson",
+      "mag": 1.56,
+      "place": "25 km SW of Ocotillo Wells, CA",
+      "time": 1726982596000,
+      "title": "M 1.6 - 25 km SW of Ocotillo Wells, CA",
+      "tsunami": 0,
+      "type": "earthquake",
+      "updated": 1726982722400,
+      "url": "https://earthquake.usgs.gov/earthquakes/eventpage/ci40741663"
+    },
+    "geometry": {
+      "coordinates": [
+        -116.3208313,
+        32.9821663,
+        9.57
+      ],
+      "type": "Point"
+    }
+  },
+  {
+    "id": "ci40741687",
+    "type": "Feature",
+    "properties": {
+      "detail": "https://earthquake.usgs.gov/earthquakes/feed/v1.0/detail/ci40741687.geojson",
+      "mag": 1.5,
+      "place": "26 km SSW of Ocotillo Wells, CA",
+      "time": 1726983946320,
+      "title": "M 1.5 - 26 km SSW of Ocotillo Wells, CA",
+      "tsunami": 0,
+      "type": "earthquake",
+      "updated": 1726984071474,
+      "url": "https://earthquake.usgs.gov/earthquakes/eventpage/ci40741687"
+    },
+    "geometry": {
+      "coordinates": [
+        -116.2456665,
+        32.9263344,
+        4.17
+      ],
+      "type": "Point"
+    }
+  }
+]
+```

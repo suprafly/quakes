@@ -37,4 +37,25 @@ defmodule Quakes.USGS do
       quake -> {:ok, quake}
     end
   end
+
+  @doc"""
+  Gets all quakes within a given `distance_in_meters` from the coordinates provided.
+  """
+  def get_quakes_nearby(longitude, latitude, distance_in_meters) do
+    case Geo.WKT.decode("SRID=4326;POINT(#{longitude} #{latitude})") do
+      {:ok, point} ->
+        quakes =
+          (from q in Quake,
+            where: fragment(
+              "ST_DWithin(ST_GeomFromGeoJSON(?), ?, ?)",
+              q.geometry,
+              ^point,
+              ^distance_in_meters
+            )
+          ) |> Repo.all()
+        {:ok, quakes}
+      {:error, _} ->
+        {:error, "invalid longitude, latitude values."}
+      end
+  end
 end
