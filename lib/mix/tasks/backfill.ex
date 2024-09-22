@@ -13,7 +13,7 @@ defmodule Mix.Tasks.Quakes.Backfill do
 
   def run(_args) do
     Mix.Task.run("app.start")
-    quakes = Quakes.USGSApi.get_quakes_for_past_month()
+    quakes = Quakes.USGSApi.get_quakes_for_past_month() |> Quakes.ingest_quakes()
     IO.puts "Backfilled #{Enum.count(quakes)} quakes"
   end
 end

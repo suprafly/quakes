@@ -39,7 +39,7 @@ defmodule Quakes.QuakeMonitor do
   def handle_info({:get_latest_quakes, _} = task, state) do
     %{quakes: quakes_list} = state.get_latest_quakes
 
-    quakes = USGSApi.get_quakes()
+    quakes = USGSApi.get_quakes() |> Quakes.ingest_quakes()
     sorted_new_quakes = take_only_new(quakes, quakes_list)
 
     # Dispatch webhook events for all quakes in `sorted_new_quakes`

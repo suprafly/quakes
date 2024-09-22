@@ -38,7 +38,15 @@ defmodule Quakes.USGS do
     end
   end
 
-  @doc"""
+  @doc """
+  Gets all quakes in the given id list.
+  """
+  def list_quakes_with_ids(id_list) do
+    from(q in Quake, where: q.id in ^id_list)
+    |> Repo.all()
+  end
+
+  @doc """
   Gets all quakes within a given `distance_in_meters` from the coordinates provided.
   """
   def get_quakes_nearby(longitude, latitude, distance_in_meters) do
